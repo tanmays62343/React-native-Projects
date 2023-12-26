@@ -2,7 +2,6 @@ import { Alert, FlatList, Pressable, SafeAreaView, ScrollView, StyleSheet, Text,
 import React, { useState } from 'react'
 import { Formik } from 'formik'
 import { Button, TextInput } from 'react-native-paper'
-import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors'
 
 
 type UserData = {
