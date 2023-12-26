@@ -1,7 +1,7 @@
 import { Alert, FlatList, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Formik } from 'formik'
-import { Button, TextInput } from 'react-native-paper'
+import { Button, TextInput} from 'react-native-paper'
 
 
 type UserData = {
@@ -23,7 +23,7 @@ export default function MyForm() {
   const [password, setPassword] = useState("")
   //const [gender, setGender] = useState("")
 
-  const [registeredPeopel, setRegisteredPeopel] = useState<UserData[]>([])
+  const [registeredPeople, setRegisteredPeople] = useState<UserData[]>([])
 
   const onSubmit = () => {
 
@@ -33,7 +33,7 @@ export default function MyForm() {
 
     setId(id => id + 1)
     const newRegistration: UserData = { id, name, email, mobileNo, password } //,gender
-    setRegisteredPeopel([...registeredPeopel, newRegistration])
+    setRegisteredPeople([...registeredPeople, newRegistration])
 
     clearInputFields()
 
@@ -48,7 +48,7 @@ export default function MyForm() {
   }
 
   const emptyUserData = () => {
-    setRegisteredPeopel([])
+    setRegisteredPeople([])
   }
 
 
@@ -126,11 +126,11 @@ export default function MyForm() {
       </ScrollView>
 
 
-      {registeredPeopel.length > 0 && (
+      {registeredPeople.length > 0 && (
         <View>
 
           <FlatList
-            data={registeredPeopel}
+            data={registeredPeople}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <View style={styles.showFormData}>
