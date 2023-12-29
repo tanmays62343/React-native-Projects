@@ -12,7 +12,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
       <Image
         style={styles.img}
-        source={require('../assets/login.png')}
+        source={require('../../assets/login.png')}
       />
 
       <TextInput

@@ -13,7 +13,7 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
 
       <Image
       style = {styles.img}
-      source={require("../assets/otp_img.png")}
+      source={require("../../assets/otp_img.png")}
       />
 
       <View style = {styles.otpInputHolder}>

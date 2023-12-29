@@ -28,10 +28,10 @@ export default function BottomBarScreen() {
           // }
 
           if (route.name == 'Headlines') {
-            iconSource = require('../assets/headlines.png')
+            iconSource = require('../../assets/headlines.png')
           }
           else if (route.name == "All News") {
-            iconSource = require('../assets/allNews.png')
+            iconSource = require('../../assets/allNews.png')
           }
 
           return <Image source={iconSource} style={{ width: size, height: size, tintColor: color }} />;
