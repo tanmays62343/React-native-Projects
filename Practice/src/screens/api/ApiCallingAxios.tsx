@@ -1,6 +1,7 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { axiosApiGetRequest, axiosApiPostRequest } from './AxiosApiRequests'
+import { Button } from 'react-native-paper';
 
 
 type Country = {
@@ -16,10 +17,15 @@ type Country = {
 export default function ApiCallingAxios() {
 
     const [countries, setCountries] = useState<Country[]>([])
+    const [isLoading, setIsLoading] = useState(false)
 
-    useEffect(() => {
-        getData()
-    }, [])
+    // useEffect(() => {
+    //     getData()
+    // }, [])
+
+    const showLoader = () => {
+        return <ActivityIndicator size={'large'} />
+    }
 
     const getData = async () => {
 
@@ -38,6 +44,7 @@ export default function ApiCallingAxios() {
             .then(res => {
                 console.log(res.data.data)
                 setCountries(res.data.data)
+                setIsLoading(false)
             })
             .catch(error => console.log(error))
 
@@ -45,6 +52,18 @@ export default function ApiCallingAxios() {
 
     return (
         <View style={styles.container}>
+
+            <Button
+            mode='elevated'
+            onPress={() => {
+                getData()
+                setIsLoading(true)
+            }}
+            >
+                Fetch Data
+            </Button>
+
+            {isLoading ? showLoader() : null}
 
             <FlatList
                 data={countries}
