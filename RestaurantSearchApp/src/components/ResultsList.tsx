@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View} from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import React from 'react'
 import { FlatList } from 'react-native-gesture-handler'
 import ResultsDetail from './ResultsDetail'
@@ -6,9 +6,10 @@ import ResultsDetail from './ResultsDetail'
 interface ResultsListProps {
     results: any
     title: string
+    navigation : any
 }
 
-const ResultsList: React.FC<ResultsListProps> = ({ results, title }) => {
+const ResultsList: React.FC<ResultsListProps> = ({ navigation, results, title }) => {
 
 
     return (
@@ -23,7 +24,11 @@ const ResultsList: React.FC<ResultsListProps> = ({ results, title }) => {
                 keyExtractor={(result) => result.id}
                 renderItem={({ item }) => {
                     return (
+                        <TouchableOpacity
+                        onPress={() => navigation.navigate("DetailsScreen")}
+                        >
                         <ResultsDetail result = {item} />
+                        </TouchableOpacity>
                     )
                 }}
             />

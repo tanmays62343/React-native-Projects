@@ -3,10 +3,15 @@ import React, { useState } from 'react'
 import SearchBar from '../components/SearchBar'
 import useSearchResults from '../hooks/useSearchResults'
 import ResultsList from '../components/ResultsList'
+import { ActivityIndicator } from 'react-native-paper'
 
-const SearchScreen = () => {
+interface SearchScreenProps {
+    navigation: any
+}
 
-    const filterResultsByPrice = (price : string) => {
+const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
+
+    const filterResultsByPrice = (price: string) => {
 
         return response.filter(result => {
             return result.price === price
@@ -18,7 +23,7 @@ const SearchScreen = () => {
     const [searchApi, response, errorMessage] = useSearchResults()
 
     return (
-        <ScrollView style = {styles.Container}>
+        <ScrollView style={styles.Container}>
 
             <SearchBar
                 search={search}
@@ -28,21 +33,29 @@ const SearchScreen = () => {
 
             {errorMessage ? <Text>{errorMessage}</Text> : null}
 
-            <Text>We have found {response.length} results.</Text>
+            {response.length == 0 ? <ActivityIndicator size={'large'} /> : (
+                <>
 
-            <ResultsList results={filterResultsByPrice("$")}   title = "Cost Effective"/>
+                    <Text>We have found {response.length} results.</Text>
+                    {response.length > 0 ? (
+                        <>
+                            <ResultsList navigation={navigation} results={filterResultsByPrice("$")} title="Cost Effective" />
+                            <ResultsList navigation={navigation} results={filterResultsByPrice("$$")} title="Premium" />
+                            <ResultsList navigation={navigation} results={filterResultsByPrice("$$$")} title="Luxury" />
+                        </>
+                    ) : null}
 
-            <ResultsList results={filterResultsByPrice("$$")}  title = "Premium" />
 
-            <ResultsList results={filterResultsByPrice("$$$")} title = "Luxury" />
+                </>
+            )}
 
         </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
-    Container : {
-        padding : 2,
+    Container: {
+        padding: 2,
     }
 })
 
