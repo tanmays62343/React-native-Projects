@@ -34,12 +34,8 @@ export default function ApiCallingAxios() {
         // .catch(error => {console.log(error)})
 
         await axiosApiPostRequest(
-
             "https://staging-ahasolar-rewamp.ahasolar.in/api/place/getCountries",
-
-            {
-                id: 1
-            }
+            {id: 1}
         )
             .then(res => {
                 console.log(res.data.data)

@@ -1,29 +1,31 @@
 import React, { createContext, ReactNode } from "react";
 
-//Ask sir why only the default value appears in the value prop
-
 interface BlogContextProviderProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
-interface BlogPost {
-  title: string
+export interface BlogPost {
+  title: string;
 }
 
-const defaultValue : BlogPost[] = [
-    {title : 'Hello #1'},
-]
+const defaultValue: BlogPost[] = [{ title: "Hello #1" }];
 
 const BlogContext = createContext<BlogPost[]>(defaultValue);
 
-export const BlogProvider: React.FC<BlogContextProviderProps> = ({ children }) => {
+export const BlogProvider: React.FC<BlogContextProviderProps> = ( { children } ) => {
 
-  const blogPosts: BlogPost[] = [
-    { title: 'New BlogPost #1' },
-    { title: 'New BlogPost #2' }
+  const test = [
+    { title: "Hello #1" },
+    { title: "Hello #2" },
+    { title: "Hello #3" },
   ]
 
-  return <BlogContext.Provider value={blogPosts}> {children} </BlogContext.Provider>
+  return (
+    <BlogContext.Provider value={test /* replace with your actual state */}>
+      {children}
+    </BlogContext.Provider>
+  )
+
 }
 
-export default BlogContext
+export default BlogContext;
