@@ -3,21 +3,26 @@ import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { NavigationContainer } from '@react-navigation/native'
 import HomeScreen from './screens/HomeScreen'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 export default function App() {
 
   const stack = createStackNavigator()
 
   return (
-    <NavigationContainer>
+    <GestureHandlerRootView style={{flex : 1}}>
 
-      <stack.Navigator>
+      <NavigationContainer>
 
-        <stack.Screen name='Home' component={HomeScreen} options={{title : "Forms"}}/>
+        <stack.Navigator>
 
-      </stack.Navigator>
+          <stack.Screen name='Home' component={HomeScreen} options={{ title: "Forms" }} />
 
-    </NavigationContainer>
+        </stack.Navigator>
+
+      </NavigationContainer>
+      
+    </GestureHandlerRootView>
   )
 }
 

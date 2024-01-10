@@ -51,7 +51,7 @@ const BottomSheetComp = () => {
   )
 
   return (
-    <GestureHandlerRootView style={styles.outerContainer}>
+    
 
       <View style={styles.container}>
 
@@ -85,8 +85,6 @@ const BottomSheetComp = () => {
         </BottomSheet>
 
       </View>
-
-    </GestureHandlerRootView>
   )
 }
 
