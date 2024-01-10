@@ -16,12 +16,27 @@ export default function App() {
 
         <stack.Navigator>
 
-          <stack.Screen name='Home' component={HomeScreen} options={{ title: "Forms" }} />
+          {/* HomeScreen */}
+          <stack.Screen 
+          name='Home' 
+          component={HomeScreen} 
+          options={{ 
+            title: "Customer Lead",
+            headerStyle : {
+              backgroundColor : '#FAD02E'
+            },
+            headerTitleStyle : {
+              fontWeight : 'bold'
+            },
+            headerTintColor : 'white'
+          }}
+          />
 
+          
         </stack.Navigator>
 
       </NavigationContainer>
-      
+
     </GestureHandlerRootView>
   )
 }
