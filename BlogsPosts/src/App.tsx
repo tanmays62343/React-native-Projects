@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { NavigationContainer } from '@react-navigation/native'
 import Home from './screens/Home'
 import HomeScreen from './screens/Home'
+import { BlogProvider } from './context/BlogContext'
 
 
 const stack = createStackNavigator()
@@ -10,15 +11,17 @@ const stack = createStackNavigator()
 export default function App() {
   return (
 
-    <NavigationContainer>
+    <BlogProvider>
+      <NavigationContainer>
 
-      <stack.Navigator>
+        <stack.Navigator>
 
-        <stack.Screen name='Home' component={HomeScreen} options={{ title: "Blogs" }} />
+          <stack.Screen name='Home' component={Home} options={{ title: "Blogs" }} />
 
-      </stack.Navigator>
+        </stack.Navigator>
 
-    </NavigationContainer>
+      </NavigationContainer>
+    </BlogProvider>
 
   )
 }
