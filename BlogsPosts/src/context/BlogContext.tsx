@@ -21,7 +21,7 @@ export const BlogProvider: React.FC<BlogContextProviderProps> = ( { children } )
   ]
 
   return (
-    <BlogContext.Provider value={test /* replace with your actual state */}>
+    <BlogContext.Provider value={test}>
       {children}
     </BlogContext.Provider>
   )

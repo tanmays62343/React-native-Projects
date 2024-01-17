@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Modal, Button } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import MapView, { LatLng, Marker, PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, { LatLng, Marker, PROVIDER_GOOGLE, Polygon } from 'react-native-maps'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import GetLocation, { Location } from 'react-native-get-location'
 import Geocoder from 'react-native-geocoding'
@@ -16,7 +16,6 @@ interface selectedPlace {
 //Taking Address From Draggable Marker
 const handleMarkerDragEnd = async (e: { nativeEvent: { coordinate: LatLng } }) => {
   const { latitude, longitude } = e.nativeEvent.coordinate;
-
   try {
     const response = await Geocoder.from({ latitude, longitude })
     const address = response.results[0].formatted_address;
@@ -26,7 +25,6 @@ const handleMarkerDragEnd = async (e: { nativeEvent: { coordinate: LatLng } }) =
   catch (error) {
     console.error('Error getting location name:', error)
   }
-
 }
 
 export default function GoogleMapsScreen() {
@@ -34,7 +32,11 @@ export default function GoogleMapsScreen() {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedPlace, setSelectedPlace] = useState<selectedPlace>({ name: '' })
 
+  const [polygonCoordinates, setPolygonCoordinates] = useState<LatLng[]>([])
+
   const [currentLocation, setCurrentLocation] = useState<Location>()
+
+  const mapViewRef = useRef(null)
 
   useEffect(() => {
     GetLocation.getCurrentPosition({
@@ -48,6 +50,18 @@ export default function GoogleMapsScreen() {
         const { code, message } = error;
         console.warn(code, message)
       })
+
+    //Animation
+    // if (currentLocation) {
+    //   // Set initial region and trigger zoom animation
+    //   mapViewRef.current?.animateToRegion({
+    //     latitude: currentLocation.latitude,
+    //     longitude: currentLocation.longitude,
+    //     latitudeDelta: 0.005, // Adjust this value for more zoom
+    //     longitudeDelta: 0.005, // Adjust this value for more zoom
+    //   }, 1000); // Adjust the duration of the animation (in milliseconds)
+    // }
+
   }, [])
 
   const DetailPopUp = () => {
@@ -73,31 +87,60 @@ export default function GoogleMapsScreen() {
   const handlePlacePress = (data: any) => {
     setSelectedPlace({ name: data.description })
     setModalVisible(true);
-  };
+  }
 
+  const handleMapPress = (e: { nativeEvent: { coordinate: LatLng } }) => {
+    const { latitude, longitude } = e.nativeEvent.coordinate;
+    setPolygonCoordinates([...polygonCoordinates, { latitude, longitude }]);
+  }
 
   return (
 
     <View style={styles.container}>
 
       <MapView
+        ref={mapViewRef}
         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
         style={styles.map}
+        onPress={handleMapPress}
         region={{
           latitude: currentLocation?.latitude || 0,
           longitude: currentLocation?.longitude || 0,
-          latitudeDelta: 0.02,
-          longitudeDelta: 0.02
+          latitudeDelta: 0.004,
+          longitudeDelta: 0.004
         }}
+        showsUserLocation={true}
+        mapType='hybrid'
+        zoomControlEnabled={true}
       >
 
         <Marker draggable
-        coordinate={{
-          latitude: currentLocation?.latitude || 0,
-          longitude: currentLocation?.longitude || 0
-        }}
-        onDragEnd={handleMarkerDragEnd}
+          coordinate={{
+            latitude: currentLocation?.latitude || 0,
+            longitude: currentLocation?.longitude || 0
+          }}
+          onDragEnd={handleMarkerDragEnd}
         />
+
+        {polygonCoordinates.length > 0 && (
+          <>
+            <Polygon
+              coordinates={polygonCoordinates}
+              strokeColor="#000"
+              strokeWidth={2}
+              fillColor="rgba(255,0,0,0.5)"
+            />
+            {polygonCoordinates.map((point, index) => (
+              <Marker
+                draggable
+                key={index}
+                coordinate={point}
+                pinColor="yellow"
+                title={`Point ${index + 1}`}
+              />
+            ))}
+          </>
+        )}
 
       </MapView>
 
