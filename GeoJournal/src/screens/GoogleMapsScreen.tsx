@@ -1,9 +1,11 @@
-import { StyleSheet, Text, View, Modal, Button } from 'react-native'
+import { Alert, StyleSheet, Text, View, Modal } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
+import { Button } from 'react-native-paper'
 import MapView, { LatLng, Marker, PROVIDER_GOOGLE, Polygon } from 'react-native-maps'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import GetLocation, { Location } from 'react-native-get-location'
 import Geocoder from 'react-native-geocoding'
+import * as geolib from 'geolib';
 
 const API_KEY = ''
 
@@ -19,7 +21,6 @@ const handleMarkerDragEnd = async (e: { nativeEvent: { coordinate: LatLng } }) =
   try {
     const response = await Geocoder.from({ latitude, longitude })
     const address = response.results[0].formatted_address;
-
     console.log(address)
   }
   catch (error) {
@@ -32,11 +33,52 @@ export default function GoogleMapsScreen() {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedPlace, setSelectedPlace] = useState<selectedPlace>({ name: '' })
 
+  //This array is for taking the Points of the Polygon
   const [polygonCoordinates, setPolygonCoordinates] = useState<LatLng[]>([])
+  const [areaOfPolygon, setAreaOfPolygon] = useState(0)
 
   const [currentLocation, setCurrentLocation] = useState<Location>()
 
   const mapViewRef = useRef(null)
+
+  //This is to handel the drag of the point of polygon
+  const handleMarkerDrag = (index: number, coordinate: LatLng) => {
+    const updatedCoordinates = [...polygonCoordinates];
+    updatedCoordinates[index] = coordinate;
+    setPolygonCoordinates(updatedCoordinates);
+  }
+
+  //Handle Undo Button
+  const handelUndoButton = () => {
+    if (polygonCoordinates.length > 0) {
+      const updatedCoordinates = [...polygonCoordinates.slice(0, -1)]
+      setPolygonCoordinates(updatedCoordinates)
+    } else {
+      console.log("There are no polygon points")
+    }
+  }
+
+  const calculateSurfaceArea = () => {
+    if (polygonCoordinates.length >= 3) {
+      // Ensure the first and last points are the same for a closed polygon
+      if (
+        polygonCoordinates[0].latitude !== polygonCoordinates[polygonCoordinates.length - 1].latitude ||
+        polygonCoordinates[0].longitude !== polygonCoordinates[polygonCoordinates.length - 1].longitude
+      ) {
+        // Add the first point at the end to close the polygon
+        setPolygonCoordinates([...polygonCoordinates, polygonCoordinates[0]]);
+      }
+      const area = geolib.getAreaOfPolygon(
+        polygonCoordinates.map(coord => ({ latitude: coord.latitude, longitude: coord.longitude }))
+      );
+      console.log('Surface Area:', area);
+      setAreaOfPolygon(area)
+
+      Alert.alert(`The surface area of the selected region is: ${area.toFixed(2)}`)
+    } else {
+      console.log('At least 3 points are required to calculate the surface area.');
+    }
+  }
 
   useEffect(() => {
     GetLocation.getCurrentPosition({
@@ -71,13 +113,13 @@ export default function GoogleMapsScreen() {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+          setModalVisible(!modalVisible)
         }}
       >
         <View style={styles.modalContainer}>
           <View style={styles.alertBox}>
             <Text style={styles.alertText}>Place Name: {selectedPlace.name}</Text>
-            <Button title="Close" onPress={() => setModalVisible(!modalVisible)} />
+            <Button onPress={() => setModalVisible(!modalVisible)}>Close</Button>
           </View>
         </View>
       </Modal>
@@ -86,7 +128,7 @@ export default function GoogleMapsScreen() {
 
   const handlePlacePress = (data: any) => {
     setSelectedPlace({ name: data.description })
-    setModalVisible(true);
+    setModalVisible(true)
   }
 
   const handleMapPress = (e: { nativeEvent: { coordinate: LatLng } }) => {
@@ -134,6 +176,7 @@ export default function GoogleMapsScreen() {
               <Marker
                 draggable
                 key={index}
+                onDrag={(e) => handleMarkerDrag(index, e.nativeEvent.coordinate)}
                 coordinate={point}
                 pinColor="yellow"
                 title={`Point ${index + 1}`}
@@ -171,6 +214,22 @@ export default function GoogleMapsScreen() {
           }}
         />
       </View>
+
+      <Button
+        onPress={handelUndoButton}
+        mode='elevated'
+        style={styles.btnStyle}
+      >
+        Undo
+      </Button>
+
+      <Button
+        onPress={calculateSurfaceArea}
+        mode='elevated'
+        style={styles.btnStyle}
+      >
+        Calculate Area
+      </Button>
 
       <DetailPopUp />
 
@@ -215,9 +274,11 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-
   alertText: {
     fontSize: 18,
     marginBottom: 10,
   },
+  btnStyle: {
+    margin: 8,
+  }
 })
