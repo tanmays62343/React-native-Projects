@@ -7,7 +7,7 @@ import GetLocation, { Location } from 'react-native-get-location'
 import Geocoder from 'react-native-geocoding'
 import * as geolib from 'geolib';
 
-const API_KEY = ''
+const API_KEY = 'AIzaSyBu9pup8uAdJB9EYl1VvMxmPlTb1omxRFE'
 
 Geocoder.init(API_KEY)
 
@@ -35,6 +35,7 @@ export default function GoogleMapsScreen() {
 
   //This array is for taking the Points of the Polygon
   const [polygonCoordinates, setPolygonCoordinates] = useState<LatLng[]>([])
+  const [midpoints, setMidpoints] = useState<LatLng[]>([])
   const [areaOfPolygon, setAreaOfPolygon] = useState(0)
 
   const [currentLocation, setCurrentLocation] = useState<Location>()
@@ -58,6 +59,34 @@ export default function GoogleMapsScreen() {
     }
   }
 
+  // const calculateMidpoints = () => {
+  //   if (polygonCoordinates.length >= 2) {
+  //     for (let i = 0; i < polygonCoordinates.length - 1; i++) {
+  //       const midpoint = geolib.getCenter([
+  //         { latitude: polygonCoordinates[i].latitude, longitude: polygonCoordinates[i].longitude },
+  //         { latitude: polygonCoordinates[i + 1].latitude, longitude: polygonCoordinates[i + 1].longitude }
+  //       ])
+  //       console.log(midpoint)
+  //       if (midpoint && midpoint.latitude && midpoint.longitude) {
+  //         midpoints.push(midpoint)
+  //       } else {
+  //         console.error('Invalid midpoint:', midpoint);
+  //       }
+  //     }
+  //   }
+  //   if (midpoints.length > 0) {
+  //     return (
+  //       midpoints.map((point, index) => (
+  //         <Marker
+  //           draggable
+  //           coordinate={point}
+  //           pinColor='orange'
+  //         />
+  //       ))
+  //     )
+  //   }
+  // }
+
   const calculateSurfaceArea = () => {
     if (polygonCoordinates.length >= 3) {
       // Ensure the first and last points are the same for a closed polygon
@@ -74,7 +103,7 @@ export default function GoogleMapsScreen() {
       console.log('Surface Area:', area);
       setAreaOfPolygon(area)
 
-      Alert.alert(`The surface area of the selected region is: ${area.toFixed(2)}`)
+      Alert.alert(`The surface area of the selected region is: ${area.toFixed(2)} m2`)
     } else {
       console.log('At least 3 points are required to calculate the surface area.');
     }
@@ -182,6 +211,9 @@ export default function GoogleMapsScreen() {
                 title={`Point ${index + 1}`}
               />
             ))}
+            {/* {polygonCoordinates.length > 1 && (
+              calculateMidpoints()
+            )} */}
           </>
         )}
 
