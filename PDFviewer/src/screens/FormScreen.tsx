@@ -1,8 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Button, TextInput } from 'react-native-paper'
-import { createRxDatabase } from 'rxdb/plugins/core'
-import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie'
 
 
 const FormScreen = () => {
@@ -11,7 +9,7 @@ const FormScreen = () => {
   const [email, setEmail] = useState("")
 
   useEffect(() => {
-    const db = createRxDatabase({name : "UsersList", storage : getRxStorageDexie()})
+
   }, [])
 
   return (
