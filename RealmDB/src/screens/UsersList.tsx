@@ -1,7 +1,7 @@
 import { FlatList, StyleSheet, Text, View, Button } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Realm from 'realm';
-import { useFocusEffect } from '@react-navigation/native';\
+import { useFocusEffect } from '@react-navigation/native';
 
 //To Implement this install Realm Package
 
